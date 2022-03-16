@@ -24,6 +24,7 @@ public class ImageController : MonoBehaviour
         sprites.Add(Resources.Load<Sprite>("Sprites/mouthwash"));
         sprites.Add(Resources.Load<Sprite>("Sprites/translator"));
         sprites.Add(Resources.Load<Sprite>("Sprites/spaceship"));
+        sprites.Add(Resources.Load<Sprite>("Sprites/broken_power_battery"));
     }
 
     // Update is called once per frame

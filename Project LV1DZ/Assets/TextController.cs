@@ -157,7 +157,7 @@ public class TextController : MonoBehaviour
     void defeat_agony(){
         imageController.SetAndShowImage(2,levelStateController.Power);
         storyText.text = "Defeat!"+
-        "\nYou died while suffering agonizing pain caused by alien bacteria."+
+        "\nYou died while feeling agonizing pain caused by alien bacteria."+
         "\n"+
         "\n -> Press S to start over";
         if (Input.GetKeyDown(KeyCode.S))
@@ -367,20 +367,36 @@ public class TextController : MonoBehaviour
         }              
     }
     void powerroom() {
-        storyText.text="There is what seems to be the power generator in the room."+        
-        "\n -> Press S to sabotage"+
-        "\n -> Press L to leave the room";
 
-        imageController.SetAndShowImage(5,levelStateController.Power);
 
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            levelStateController.Power = false;
-        }   
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            myState=States.hallway;
-        }         
+        if(levelStateController.Power == true){
+            storyText.text="There is what seems to be the power generator in the room."+        
+            "\n -> Press S to sabotage"+
+            "\n -> Press L to leave the room";
+
+            imageController.SetAndShowImage(5,levelStateController.Power);
+            if (Input.GetKeyDown(KeyCode.S))
+            {
+                levelStateController.Power = false;
+            }   
+            if (Input.GetKeyDown(KeyCode.L))
+            {
+                myState=States.hallway;
+            }  
+        }else{
+            storyText.text="The power generator is broken."+        
+            "\n -> Press L to leave the room";
+
+            imageController.SetAndShowImage(11,levelStateController.Power);
+            if (Input.GetKeyDown(KeyCode.L))
+            {
+                myState=States.hallway;
+            }        
+        }
+
+
+
+       
      }
 
      void bathroom_near_window(){
@@ -482,7 +498,7 @@ public class TextController : MonoBehaviour
     }
     void bridge3_2(){
          storyText.text="A flash of Jackie Chan movies comes to your mind and you become enlightened by the knowledge of the black belt. "+
-            "After beating a half of the aliens, the other half ran away like unhonorable cowards they are. "+
+            "After beating half of the aliens, the other half ran away like unhonorable cowards they are. "+
             "\n -> Press Space to continue"; 
             if (Input.GetKeyDown(KeyCode.Space))
             {
