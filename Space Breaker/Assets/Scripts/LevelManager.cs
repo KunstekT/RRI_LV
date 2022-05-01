@@ -8,14 +8,26 @@ public class LevelManager : MonoBehaviour
     public static int breakableCount = 0;
     [SerializeField] private LivesManager livesManager;
     private BrickCounter brickCounter;
+    Scene scene;
 
     void Start(){
-        livesManager = GameObject.FindObjectOfType<LivesManager>();
+        scene = SceneManager.GetActiveScene();
 
         breakableCount = GameObject.FindGameObjectsWithTag("Breakable").Length;
         brickCounter = GameObject.FindGameObjectWithTag("BrickCounter").GetComponent<BrickCounter>();
         brickCounter.SetText(breakableCount.ToString());
     }
+
+    void Awake(){
+        livesManager = GameObject.FindObjectOfType<LivesManager>();
+        if (livesManager)
+            Debug.Log("livesManager object found: " + livesManager.name);
+        else
+            Debug.Log("No livesManager object could be found");
+
+
+    }
+
     public void LoadLevel(string Name){
         breakableCount = 0;
         SceneManager.LoadScene(Name);
@@ -33,14 +45,15 @@ public class LevelManager : MonoBehaviour
         breakableCount--;
         brickCounter.SetText(breakableCount.ToString());
         if( breakableCount <= 0){
-            LoadNextLevel();
+            if(scene.name == "Level 3"){Debug.Log("VICTORY");}
+            else{LoadNextLevel();}            
         }
     }             
     
     void OnEnable()
     {
     //Tell our 'OnLevelFinishedLoading' function to start listening for a scene change as soon as this script is enabled.
-    SceneManager.sceneLoaded += OnLevelFinishedLoading;
+        SceneManager.sceneLoaded += OnLevelFinishedLoading;
     }
 
     void OnDisable()
