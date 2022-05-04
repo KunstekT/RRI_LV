@@ -35,6 +35,7 @@ public class Brick : MonoBehaviour
                 
                 levelManager.BrickDestroyed();
                 Instantiate(Smoke, this.gameObject.transform.position, Quaternion.identity);
+                GameObject.FindGameObjectWithTag("Score").GetComponent<HighScoreManager>().AddScore(1);
                 Destroy(gameObject);
             }else{
                 int spriteIndex = currentHitCount;

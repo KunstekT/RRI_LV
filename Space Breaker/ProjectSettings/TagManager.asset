@@ -10,6 +10,7 @@ TagManager:
   - heart2
   - heart3
   - BrickCounter
+  - Score
   layers:
   - Default
   - TransparentFX

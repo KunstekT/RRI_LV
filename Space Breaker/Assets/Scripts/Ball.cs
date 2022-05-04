@@ -45,7 +45,7 @@ public class Ball : MonoBehaviour
         Vector2 targetDirection = (GetComponent<Rigidbody2D>().velocity+tweakVelocity).normalized;
         if(hasStarted){
             GetComponent<Rigidbody2D>().velocity = targetDirection * constantSpeed;
-            AudioClip clip = ballSounds[0];
+            AudioClip clip = ballSounds[2];
             myAudioSource.PlayOneShot(clip);
         }
     }
