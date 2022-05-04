@@ -42,7 +42,6 @@ public class Ball : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision2D){
         Vector2 tweakVelocity = new Vector2(Random.Range(-0.15f,0.15f), Random.Range(-0.15f,0.15f));
-        Debug.DrawLine(this.transform.position,new Vector3(tweakVelocity.normalized.x, tweakVelocity.normalized.y,0)*100f, Color.red, 10f);
         Vector2 targetDirection = (GetComponent<Rigidbody2D>().velocity+tweakVelocity).normalized;
         if(hasStarted){
             GetComponent<Rigidbody2D>().velocity = targetDirection * constantSpeed;

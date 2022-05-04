@@ -14,6 +14,9 @@ public class LivesManager : MonoBehaviour
 
     private readonly int maxLives = 3;
     int livesLeft = 3;
+    public void ResetLifeCount(){
+        livesLeft = maxLives;
+    }
 
     public void ReduceLifeCount(){
         livesLeft--;

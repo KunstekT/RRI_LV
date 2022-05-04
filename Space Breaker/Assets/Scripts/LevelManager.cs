@@ -12,6 +12,9 @@ public class LevelManager : MonoBehaviour
 
     void Start(){
         scene = SceneManager.GetActiveScene();
+        if(scene.name == "Level 1"){
+            InitializeHealth();
+        }
 
         breakableCount = GameObject.FindGameObjectsWithTag("Breakable").Length;
         brickCounter = GameObject.FindGameObjectWithTag("BrickCounter").GetComponent<BrickCounter>();
@@ -45,7 +48,7 @@ public class LevelManager : MonoBehaviour
         breakableCount--;
         brickCounter.SetText(breakableCount.ToString());
         if( breakableCount <= 0){
-            if(scene.name == "Level 3"){Debug.Log("VICTORY");}
+            if(scene.name == "Level 3"){Debug.Log("VICTORY");LoadLevel("Victory");}
             else{LoadNextLevel();}            
         }
     }             
@@ -68,6 +71,11 @@ public class LevelManager : MonoBehaviour
         // Debug.Log("Level Loaded");
         // Debug.Log(scene.name);
         // Debug.Log(mode);
+        livesManager.Initialize();
+    }
+
+    void InitializeHealth(){
+        livesManager.ResetLifeCount();
         livesManager.Initialize();
     }
 }
