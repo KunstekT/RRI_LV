@@ -72,6 +72,9 @@ public class LevelManager : MonoBehaviour
         // Debug.Log(scene.name);
         // Debug.Log(mode);
         livesManager.Initialize();
+        if(scene.name == "Level 1"){            
+            GameObject.FindGameObjectWithTag("Score").GetComponent<HighScoreManager>().ResetScore();
+        }
     }
 
     void InitializeHealth(){
