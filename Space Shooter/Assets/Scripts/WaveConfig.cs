@@ -11,6 +11,7 @@ public class WaveConfig : ScriptableObject
     [SerializeField] float spawnRandomFactor = 0.3f;
     [SerializeField] int numberOfEnemies = 5;
     [SerializeField] float moveSpeed = 2f;
+    [field: SerializeField] public bool IsReversing{get;private set;} = true;
 
     public GameObject GetEnemyPrefab(){return enemyPrefab;}
     public List<Transform> GetWaypoints(){

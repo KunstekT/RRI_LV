@@ -28,14 +28,20 @@ public class EnemySpawner : MonoBehaviour
         for(int enemyCount=0; enemyCount < waveConfig.GetNumberOfEnemies(); enemyCount++){                     
             var newEnemy = Instantiate(waveConfig.GetEnemyPrefab(), waveConfig.GetWaypoints()[0].transform.position, Quaternion.identity);
             newEnemy.GetComponent<EnemyPathing>().SetWaveConfig(waveConfig);
-            yield return new WaitForSeconds(waveConfig.GetTimeBetweenSpawns());
+            yield return new WaitForSeconds(waveConfig.GetTimeBetweenSpawns()+
+                Random.Range(
+                    -waveConfig.GetSpawnRandomFactor()*waveConfig.GetTimeBetweenSpawns(),
+                    waveConfig.GetSpawnRandomFactor()*waveConfig.GetTimeBetweenSpawns())
+                    );
 
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    public int GetEnemyCount(){
+        int counter=0;
+        foreach(WaveConfig wc in waveConfigs){
+            counter+=wc.GetNumberOfEnemies();
+        }
+        return counter;
     }
 }

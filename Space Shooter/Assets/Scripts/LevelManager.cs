@@ -6,9 +6,28 @@ using UnityEngine.SceneManagement;
 public class LevelManager : MonoBehaviour
 {
     Scene scene;
+    [SerializeField]List<float> spawnDelays;
+    [SerializeField]List<Collectible> collectiblesToSpawn;
+    [SerializeField]float RandomSpawnFactor=0.5f;
+    [SerializeField]EnemySpawner spawner;
+    int TotalNumberOfEnemiesToDestroy=0;
+    int EnemiesToDestroyCount=0;
+
 
     void Start(){
+        if(spawner!=null){
+            TotalNumberOfEnemiesToDestroy=spawner.GetEnemyCount();
+            EnemiesToDestroyCount=TotalNumberOfEnemiesToDestroy;
+        }
         scene = SceneManager.GetActiveScene();
+        int index=0;
+        if(spawnDelays!=null){
+            foreach(float spawnDelay in spawnDelays){
+                if(index>=collectiblesToSpawn.Count)break;
+                StartCoroutine(SpawnCollectibles(spawnDelay, collectiblesToSpawn[Random.Range(0,collectiblesToSpawn.Count-1)]));
+                index++;
+            }
+        }
     }
     public void LoadLevel(string Name){
         SceneManager.LoadScene(Name);
@@ -42,6 +61,27 @@ public class LevelManager : MonoBehaviour
         // Debug.Log(mode);
         if(scene.name == "Level 1"){            
             GameObject.FindGameObjectWithTag("Score").GetComponent<HighScoreManager>().ResetScore();
+        }
+    }
+
+    IEnumerator SpawnCollectibles(float spawnDelay, Collectible collectible){
+        yield return new WaitForSeconds(spawnDelay);
+        SpawnCollectible(collectible);
+    }
+
+    void SpawnCollectible(Collectible collectible){
+        Instantiate(collectible.gameObject, GetRandomPosition(), Quaternion.identity);
+    }
+
+    private Vector3 GetRandomPosition(){
+        return new Vector3(0f+Random.Range(RandomSpawnFactor*(-5.14f), RandomSpawnFactor*5.14f),0f+Random.Range(RandomSpawnFactor*(-5f), RandomSpawnFactor*2f),0f);
+    }
+
+    public void ReduceEnemyCount(){
+        EnemiesToDestroyCount--;
+        if(EnemiesToDestroyCount<=0){
+            Debug.Log(EnemiesToDestroyCount);
+            LoadLevel("Victory");
         }
     }
 }

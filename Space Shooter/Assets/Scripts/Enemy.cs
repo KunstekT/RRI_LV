@@ -7,13 +7,19 @@ public class Enemy : MonoBehaviour
     [SerializeField] float health = 100;
     [SerializeField] GameObject laserPrefab;
     [SerializeField] float projectileSpeed = 5;
-    [SerializeField] float firingRate = 10f;
-    [SerializeField] float firingDelay = 2f;
+    [SerializeField] float firingRate = 1f;
+    [SerializeField] float firingRateRandomFactor = 0.2f;
+    [SerializeField] float firingDelay = 0.3f;
+    
+    LevelManager levelManager;
 
     // Start is called before the first frame update
     void Start()
     {
         Fire();
+        if(GameObject.FindGameObjectWithTag("LevelManager")){
+            levelManager = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelManager>();
+        }
     }
 
     // Update is called once per frame
@@ -45,6 +51,7 @@ public class Enemy : MonoBehaviour
         if(health <= 0){
             if(damageDealer.GetComponent<Laser>()!=null)damageDealer.GetComponent<Laser>().NotifyLaserDestroyedTarget(1);
             else{Debug.LogWarning("Laser is null (Enemy)");}
+            levelManager.ReduceEnemyCount();
             Destroy(gameObject);
         }
     }
@@ -62,10 +69,11 @@ public class Enemy : MonoBehaviour
 
     IEnumerator FireShot(){
 
-            yield return new WaitForSeconds(firingRate);
-
             GameObject laser = Instantiate(laserPrefab, transform.position, Quaternion.identity) as GameObject;
             laser.GetComponent<Rigidbody2D>().velocity = new Vector2(0, -projectileSpeed);
+
+            yield return new WaitForSeconds(firingRate+Random.Range(-firingRateRandomFactor*firingRate,firingRateRandomFactor*firingRate));
+
             StartCoroutine(FireShot());
     }
 }

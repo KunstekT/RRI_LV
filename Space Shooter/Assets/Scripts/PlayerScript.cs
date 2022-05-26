@@ -10,32 +10,40 @@ public class PlayerScript : MonoBehaviour
     float moveSpeed = 15f;
     float padding = 0.6f;
     float minX, minY, maxX, maxY;
-    float firingRate = 0.2f;
+    float firingRate = 0.3f;
+    float laserFatness = 1f;
+    float projectileSpeedBuff = 0f;
+    bool IsTripleLaserOn = false;
     Coroutine firingCoroutine;
     HealthController healthController;
-
-    // Start is called before the first frame update
-    IEnumerator PrintAndWait(){
-        Debug.Log("Prva poruka");
-        yield return new WaitForSeconds(firingRate);
-        Debug.Log("Druga poruka"); 
-        yield return new WaitForSeconds(firingRate);
-    }
 
     IEnumerator FireContinuously(){
 
         while(true){
-            GameObject laser = Instantiate(laserPrefab, transform.position, Quaternion.identity) as GameObject;
-            laser.GetComponent<Rigidbody2D>().velocity = new Vector2(0, projectileSpeed);
-            if(laser.GetComponent<Laser>()!=null)laser.GetComponent<Laser>().SetLaserCreator(this.gameObject);
+            FireSingleProjectile(0f);
+            if(IsTripleLaserOn){
+                FireSingleProjectile(-0.3f);
+                FireSingleProjectile(0.3f);
+            }
             yield return new WaitForSeconds(firingRate);
         }
     }
+
+    void FireSingleProjectile(float positionOffset){
+        GameObject laser = Instantiate(laserPrefab, new Vector3(
+            transform.position.x+positionOffset,
+            transform.position.y,
+            transform.position.z), 
+            Quaternion.identity) as GameObject;
+        laser.transform.localScale = new Vector3(1f*laserFatness,1f,1f);
+        laser.GetComponent<Rigidbody2D>().velocity = new Vector2(0, projectileSpeed+projectileSpeedBuff);
+        if(laser.GetComponent<Laser>()!=null)laser.GetComponent<Laser>().SetLaserCreator(this.gameObject);
+    }
+
     void Start()
     {
         healthController = GetComponent<HealthController>();
         GetBoundaries();
-        StartCoroutine(PrintAndWait());
     }
 
     // Update is called once per frame
@@ -50,7 +58,8 @@ public class PlayerScript : MonoBehaviour
         var deltaX = Input.GetAxis("Horizontal") * Time.deltaTime * moveSpeed; //edit project settings input manager axes 
         var deltaY = Input.GetAxis("Vertical") * Time.deltaTime * moveSpeed; 
 
-        var newXPos = Mathf.Clamp(transform.position.x + deltaX, minX, maxX);
+        // var newXPos = Mathf.Clamp(transform.position.x + deltaX, minX, maxX);
+        var newXPos = Mathf.Clamp(transform.position.x + deltaX, -5.14f, 5.14f);
         var newYPos = Mathf.Clamp(transform.position.y + deltaY, minY, maxY);
 
         transform.position = new Vector2(newXPos, newYPos);
@@ -90,5 +99,44 @@ public class PlayerScript : MonoBehaviour
 
     public void AddScore(int value){
         highScoreManager.AddScore(value);
+    }
+
+    public void BoostFireRate(float value, float seconds){
+        firingRate-=value;
+        Debug.Log("new fire rate: "+firingRate);
+        StartCoroutine(RemoveFireRateBoost(value, seconds));
+    }
+
+    IEnumerator RemoveFireRateBoost(float value, float seconds){
+        yield return new WaitForSeconds(seconds);
+        firingRate+=value;
+    }
+
+    public void BoostLaserFatness(float value, float seconds){
+        laserFatness+=value;
+        StartCoroutine(RemoveLaserFatnessBuff(value, seconds));
+    }
+
+    IEnumerator RemoveLaserFatnessBuff(float value, float seconds){
+        yield return new WaitForSeconds(seconds);
+        laserFatness-=value;
+    }    
+    public void BoostLaserSpeed(float value, float seconds){
+        projectileSpeedBuff+=value;
+        StartCoroutine(RemoveLaserSpeedBuff(value, seconds));
+    }
+
+    IEnumerator RemoveLaserSpeedBuff(float value, float seconds){
+        yield return new WaitForSeconds(seconds);
+        projectileSpeedBuff-=value;
+    } 
+    public void SetTripleLaserBuff(float seconds){
+        IsTripleLaserOn = true;
+        StartCoroutine(RemoveTripleLaserBuff(seconds));
+    }
+
+    IEnumerator RemoveTripleLaserBuff(float seconds){
+        yield return new WaitForSeconds(seconds);
+        IsTripleLaserOn = false;
     }
 }

@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class EnemyPathing : MonoBehaviour
 {
-    [SerializeField] WaveConfig waveConfig;
-    [SerializeField] List<Transform> waypoints;
+    WaveConfig waveConfig;
+    List<Transform> waypoints;
 
     int waypointIndex = 0;
     bool forwardFlag = true;
@@ -38,8 +38,14 @@ public class EnemyPathing : MonoBehaviour
                 waypointIndex++;
             }
             if(waypointIndex == waypoints.Count){
-                forwardFlag = false;
-                waypointIndex--;
+                if(waveConfig.IsReversing){
+                    forwardFlag = false;
+                    waypointIndex--;
+                }
+                else{
+                    waypointIndex = 0;
+                    Debug.Log("waypointIndex "+waypointIndex);
+                }
             }
         }
 
