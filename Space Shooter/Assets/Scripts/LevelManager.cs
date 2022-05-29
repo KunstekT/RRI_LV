@@ -77,7 +77,12 @@ public class LevelManager : MonoBehaviour
         EnemiesToDestroyCount--;
         if(EnemiesToDestroyCount<=0){
             Debug.Log(EnemiesToDestroyCount);
-            LoadLevel("Victory");
+            StartCoroutine(LoadVictoryDelay());
         }
+    }
+
+    IEnumerator LoadVictoryDelay(){
+        yield return new WaitForSeconds(1f);
+        LoadLevel("Victory");
     }
 }
