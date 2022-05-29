@@ -209,6 +209,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd9ad887e8e96984db04799d1f0d67c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fadeoutDestroyDelay: 5
+  fadeoutDestroyDelay: 8
   boostValue: 5
   buffDuration: 5

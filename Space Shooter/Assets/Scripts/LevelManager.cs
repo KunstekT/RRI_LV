@@ -6,12 +6,13 @@ using UnityEngine.SceneManagement;
 public class LevelManager : MonoBehaviour
 {
     Scene scene;
-    [SerializeField]List<float> spawnDelays;
+    [SerializeField]float spawnDelay = 5f;
+    [SerializeField]float spawnDelayRandomnessFactor = 0.2f;
     [SerializeField]List<Collectible> collectiblesToSpawn;
     [SerializeField]float RandomSpawnFactor=0.5f;
     [SerializeField]EnemySpawner spawner;
     int TotalNumberOfEnemiesToDestroy=0;
-    int EnemiesToDestroyCount=0;
+    int EnemiesToDestroyCount=0;    
 
 
     void Start(){
@@ -20,15 +21,11 @@ public class LevelManager : MonoBehaviour
             EnemiesToDestroyCount=TotalNumberOfEnemiesToDestroy;
         }
         scene = SceneManager.GetActiveScene();
-        int index=0;
-        if(spawnDelays!=null){
-            foreach(float spawnDelay in spawnDelays){
-                if(index>=collectiblesToSpawn.Count)break;
-                StartCoroutine(SpawnCollectibles(spawnDelay, collectiblesToSpawn[Random.Range(0,collectiblesToSpawn.Count-1)]));
-                index++;
-            }
-        }
+        if(scene.name=="Level 1")
+        StartCoroutine(SpawnCollectibleCoroutine(collectiblesToSpawn[Random.Range(0,collectiblesToSpawn.Count)]));
+
     }
+
     public void LoadLevel(string Name){
         SceneManager.LoadScene(Name);
     }
@@ -64,17 +61,16 @@ public class LevelManager : MonoBehaviour
         }
     }
 
-    IEnumerator SpawnCollectibles(float spawnDelay, Collectible collectible){
-        yield return new WaitForSeconds(spawnDelay);
-        SpawnCollectible(collectible);
-    }
-
-    void SpawnCollectible(Collectible collectible){
+    IEnumerator SpawnCollectibleCoroutine(Collectible collectible){
         Instantiate(collectible.gameObject, GetRandomPosition(), Quaternion.identity);
-    }
+        yield return new WaitForSeconds(spawnDelay+spawnDelay*Random.Range(0-spawnDelayRandomnessFactor,0+spawnDelayRandomnessFactor));
+        StartCoroutine(SpawnCollectibleCoroutine(collectiblesToSpawn[Random.Range(0,collectiblesToSpawn.Count)]));
+     }
 
     private Vector3 GetRandomPosition(){
-        return new Vector3(0f+Random.Range(RandomSpawnFactor*(-5.14f), RandomSpawnFactor*5.14f),0f+Random.Range(RandomSpawnFactor*(-5f), RandomSpawnFactor*2f),0f);
+        return new Vector3(0f+Random.Range(-5f, 5f),
+        0f+Random.Range(-7f, 2f),
+        0f);
     }
 
     public void ReduceEnemyCount(){

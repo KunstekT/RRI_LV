@@ -97,11 +97,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d1330a449b20e74fa1e7705f25915f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waveConfig: {fileID: 11400000, guid: 6130f39d31e94e64297ba7b056d5fc52, type: 2}
-  waypoints:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
 --- !u!60 &-3048839796050215917
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -169,5 +164,6 @@ MonoBehaviour:
   health: 100
   laserPrefab: {fileID: 2618196505838033980, guid: e6700bd1b77ca694e8cde728f384e3d9, type: 3}
   projectileSpeed: 5
-  firingRate: 1.5
+  firingRate: 2
+  firingRateRandomFactor: 0.25
   firingDelay: 0.5

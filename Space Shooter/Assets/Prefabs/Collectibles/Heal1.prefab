@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d30a19df7205d0a488cb7efb2f8557a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fadeoutDestroyDelay: 8
   healValue: 100
 --- !u!58 &238540255496759571
 CircleCollider2D:

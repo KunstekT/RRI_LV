@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Laser : MonoBehaviour
 {
-    private GameObject laserCreator;
+    protected GameObject laserCreator;
+    
     public void SetLaserCreator(GameObject laserCreator){
         this.laserCreator = laserCreator;
     }

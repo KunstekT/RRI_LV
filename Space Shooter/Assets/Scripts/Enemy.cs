@@ -10,6 +10,10 @@ public class Enemy : MonoBehaviour
     [SerializeField] float firingRate = 1f;
     [SerializeField] float firingRateRandomFactor = 0.2f;
     [SerializeField] float firingDelay = 0.3f;
+    [SerializeField] bool IsBoss = false;
+
+    [SerializeField] float positionOffset = 0.4f;
+    bool IsDestroyed = false;
     
     LevelManager levelManager;
 
@@ -21,13 +25,6 @@ public class Enemy : MonoBehaviour
             levelManager = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelManager>();
         }
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
         
     private void OnTriggerEnter2D(Collider2D collider){
 
@@ -38,20 +35,14 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    private void DealDamage(int damage){
-        health -= damage;
-        if(health <= 0){
-
-            Destroy(gameObject);
-        }
-    }
-
     private void DealDamage(GameObject damageDealer, int damage){
+
         health -= damage;
+
         if(health <= 0){
             if(damageDealer.GetComponent<Laser>()!=null)damageDealer.GetComponent<Laser>().NotifyLaserDestroyedTarget(1);
-            else{Debug.LogWarning("Laser is null (Enemy)");}
-            levelManager.ReduceEnemyCount();
+            if(!IsDestroyed)levelManager.ReduceEnemyCount();
+            IsDestroyed = true;
             Destroy(gameObject);
         }
     }
@@ -66,13 +57,33 @@ public class Enemy : MonoBehaviour
 
         StartCoroutine(FireShot());
     }
-
+GameObject laser;
     IEnumerator FireShot(){
+            if(IsBoss){
+                laser = Instantiate(laserPrefab, new Vector3(
+                    transform.position.x+positionOffset,
+                    transform.position.y,
+                    transform.position.z), 
+                    Quaternion.identity) as GameObject;
+                laser.GetComponent<Rigidbody2D>().velocity = new Vector2(0, -projectileSpeed); 
+                laser.GetComponent<AudioSource>().Play(0);   
+                laser = Instantiate(laserPrefab, new Vector3(
+                    transform.position.x-positionOffset,
+                    transform.position.y,
+                    transform.position.z), 
+                    Quaternion.identity) as GameObject;
+                laser.GetComponent<AudioSource>().Play(0); 
+                laser.GetComponent<Rigidbody2D>().velocity = new Vector2(0, -projectileSpeed);  
+         
+            }else{
+                laser = Instantiate(laserPrefab, transform.position, Quaternion.identity) as GameObject;
+                laser.GetComponent<Rigidbody2D>().velocity = new Vector2(0, -projectileSpeed);
+                laser.GetComponent<AudioSource>().Play(0);
+            }
 
-            GameObject laser = Instantiate(laserPrefab, transform.position, Quaternion.identity) as GameObject;
-            laser.GetComponent<Rigidbody2D>().velocity = new Vector2(0, -projectileSpeed);
 
             yield return new WaitForSeconds(firingRate+Random.Range(-firingRateRandomFactor*firingRate,firingRateRandomFactor*firingRate));
+
 
             StartCoroutine(FireShot());
     }

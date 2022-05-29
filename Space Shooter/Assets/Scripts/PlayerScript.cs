@@ -10,10 +10,16 @@ public class PlayerScript : MonoBehaviour
     float moveSpeed = 15f;
     float padding = 0.6f;
     float minX, minY, maxX, maxY;
-    float firingRate = 0.3f;
+
+    [SerializeField] float defaultFiringRate = 0.15f;
+    float firingRate;
+    int fireRateBoostLevel = 0;
+
     float laserFatness = 1f;
     float projectileSpeedBuff = 0f;
     bool IsTripleLaserOn = false;
+    bool IsQuintupleLaserOn = false;
+
     Coroutine firingCoroutine;
     HealthController healthController;
 
@@ -22,8 +28,12 @@ public class PlayerScript : MonoBehaviour
         while(true){
             FireSingleProjectile(0f);
             if(IsTripleLaserOn){
-                FireSingleProjectile(-0.3f);
-                FireSingleProjectile(0.3f);
+                FireSingleProjectile(-0.5f);
+                FireSingleProjectile(0.5f);
+            }
+            if(IsQuintupleLaserOn){
+                FireSingleProjectile(-0.25f);
+                FireSingleProjectile(0.25f);
             }
             yield return new WaitForSeconds(firingRate);
         }
@@ -42,6 +52,7 @@ public class PlayerScript : MonoBehaviour
 
     void Start()
     {
+        firingRate = defaultFiringRate;
         healthController = GetComponent<HealthController>();
         GetBoundaries();
     }
@@ -102,14 +113,16 @@ public class PlayerScript : MonoBehaviour
     }
 
     public void BoostFireRate(float value, float seconds){
-        firingRate-=value;
-        Debug.Log("new fire rate: "+firingRate);
+        fireRateBoostLevel+=1;
+        
+        firingRate=defaultFiringRate/(fireRateBoostLevel+1);
         StartCoroutine(RemoveFireRateBoost(value, seconds));
     }
 
     IEnumerator RemoveFireRateBoost(float value, float seconds){
         yield return new WaitForSeconds(seconds);
-        firingRate+=value;
+        fireRateBoostLevel-=1;
+        firingRate=defaultFiringRate/(fireRateBoostLevel+1);
     }
 
     public void BoostLaserFatness(float value, float seconds){
@@ -131,12 +144,18 @@ public class PlayerScript : MonoBehaviour
         projectileSpeedBuff-=value;
     } 
     public void SetTripleLaserBuff(float seconds){
-        IsTripleLaserOn = true;
-        StartCoroutine(RemoveTripleLaserBuff(seconds));
+        if(IsTripleLaserOn){
+            IsQuintupleLaserOn = true;
+            StartCoroutine(RemoveTripleLaserBuff(seconds));
+        }else{
+            IsTripleLaserOn = true;
+            StartCoroutine(RemoveTripleLaserBuff(seconds));
+        }
     }
 
     IEnumerator RemoveTripleLaserBuff(float seconds){
         yield return new WaitForSeconds(seconds);
-        IsTripleLaserOn = false;
+        if(IsQuintupleLaserOn)IsQuintupleLaserOn=false;
+        else IsTripleLaserOn = false;
     }
 }
